@@ -13,6 +13,7 @@ Frontend: https://ecomchatbot.vercel.app/
 
 2. Install dependencies:
 ```
+cd backend
 pipenv install
 ```
 
@@ -20,10 +21,95 @@ pipenv install
 
 Feeding data based on urls:
 ```
-pipenv run python src/main.py load-data "https://uscarseat.com/pages/shipping-policy" "https://uscarseat.com/pages/return-refund" "https://uscarseat.com/pages/terms-of-services" --chatbot-id="yourchatbotid"
+pipenv run cli load-data "https://uscarseat.com/pages/shipping-policy" "https://uscarseat.com/pages/return-refund" "https://uscarseat.com/pages/terms-of-services" --chatbot-id="yourchatbotid"
 ```
 
 Answer the question:
 ```
-pipenv run python src/main.py answer-question "I want to return my product" --chatbot-id="yourchatbotid"
+pipenv run cli src/main.py answer-question "I want to return my product" --chatbot-id="yourchatbotid"
+```
+
+4. Run the API server
+```
+pipenv run api
+```
+
+# API Documentation
+## Feed Data Based on URLs
+
+This endpoint allows you to feed data to the chatbot by providing a list of URLs.
+
+- **URL**: `/feed_data/{chatbot_id}`
+- **Method**: POST
+- **Content-Type**: application/json
+
+### Request Body
+
+| Field | Type   | Description                |
+|-------|--------|----------------------------|
+| urls  | array  | List of URLs to feed data. |
+
+### Example Request
+```
+curl -X POST -H "Content-Type: application/json" -d '{
+"urls": [
+"https://uscarseat.com/pages/shipping-policy",
+"https://uscarseat.com/pages/return-refund",
+"https://uscarseat.com/pages/terms-of-services"
+]
+}' "http://localhost:8000/{chatbot_id}/feed_data"
+```
+
+
+### Response
+
+- HTTP Status Code: 200 (OK)
+- Content-Type: application/json
+
+### Example Response
+
+```json
+{
+  "message": "Data loaded successfully!"
+}
+```
+
+
+## Answering a Question
+
+This endpoint allows you to ask a question to the chatbot and retrieve an answer.
+
+- **URL**: `/answer/{chatbot_id}`
+- **Method**: POST
+- **Content-Type**: application/json
+
+### Request Body
+
+| Field        | Type           | Description                         |
+|--------------|----------------|-------------------------------------|
+| question     | string         | The question to be answered.         |
+| chat_history | array of objects | List of chat history (question/answer) tuples. |
+
+### Example Request
+
+```
+curl -X POST -H "Content-Type: application/json" -d '{
+"question": "I want to return my product",
+"chat_history": []
+}' "http://localhost:8000/{chatbot_id}/answer"
+```
+
+
+### Response
+
+- HTTP Status Code: 200 (OK)
+- Content-Type: application/json
+
+### Example Response
+
+```json
+{
+  "question": "Generated question",
+  "answer": "Generated answer"
+}
 ```

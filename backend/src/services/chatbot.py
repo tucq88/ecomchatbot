@@ -4,9 +4,10 @@ from langchain.chains import ConversationalRetrievalChain, LLMChain
 from langchain.chains.question_answering import load_qa_chain
 
 class Chatbot:
-    def __init__(self, vector_store):
+    def __init__(self, vector_store, chatbot_id):
         self.vector_store = vector_store
         self.question_generator = self._create_question_generator()
+        self.chatbot_id = chatbot_id
 
     def _create_question_generator(self):
         template = """Given the following chat history and a follow up question, rephrase the follow up input question to be a standalone question.
@@ -21,7 +22,7 @@ class Chatbot:
 
         prompt = PromptTemplate.from_template(template)
 
-        llm = OpenAI(model_name='gpt-3.5-turbo-16k', temperature=0)
+        llm = OpenAI(verbose=True, model_name='gpt-3.5-turbo-16k', temperature=0)
 
         return LLMChain(
             llm=llm,
@@ -49,12 +50,13 @@ class Chatbot:
             prompt=prompt
         )
 
-        retriever = self.vector_store.as_retriever()
+        retriever = self.vector_store.as_retriever(verbose=True, search_kwargs={'filter': {'chatbot_id': self.chatbot_id}})
 
         qa = ConversationalRetrievalChain(
             retriever=retriever,
             combine_docs_chain=qa_chain,
-            question_generator=self.question_generator
+            question_generator=self.question_generator,
+            verbose=True
         )
 
         result = qa({"question": question, "chat_history": chat_history})
@@ -62,9 +64,8 @@ class Chatbot:
     
     def _create_streaming_llm(self):
         return OpenAI(
-            model_name='gpt-3.5-turbo-16k',
-            streaming=True,
             verbose=True,
+            model_name='gpt-3.5-turbo-16k',
             max_tokens=150,
-            temperature=0.2,
+            temperature=0,
         )

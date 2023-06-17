@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a63446c1f894970cfdde6aa11fcf5c03571232f1dd05d73cb04a58d0301a5f37"
+            "sha256": "9c47892987334048d419633e0d4abf0f99d6cbeb4d5908d14e01b083f8bb991d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -433,6 +433,14 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==1.1.0"
+        },
+        "fastapi": {
+            "hashes": [
+                "sha256:95d757511c596409930bd20673358d4a4d709004edb85c5d24d6ffc48fabcbf2",
+                "sha256:b53248ee45f64f19bb7600953696e3edf94b0f7de94df1e5433fc5c6136fa986"
+            ],
+            "index": "pypi",
+            "version": "==0.97.0"
         },
         "filetype": {
             "hashes": [
@@ -1579,6 +1587,14 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2.0.16"
+        },
+        "starlette": {
+            "hashes": [
+                "sha256:6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75",
+                "sha256:918416370e846586541235ccd38a474c08b80443ed31c578a418e2209b3eef91"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==0.27.0"
         },
         "storage3": {
             "hashes": [

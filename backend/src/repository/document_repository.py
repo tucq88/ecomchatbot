@@ -1,6 +1,7 @@
 import os
 from supabase.client import Client, create_client
 from langchain.vectorstores import SupabaseVectorStore
+from .utils.custom_supabase_vector_store import CustomSupabaseVectorStore
 
 class DocumentRepository:
     def __init__(self, embeddings):
@@ -10,11 +11,15 @@ class DocumentRepository:
         self.embeddings = embeddings
     
     def get_vector_store(self):
-        vector_store = SupabaseVectorStore(client=self.client, embedding=self.embeddings, table_name="documents")
+        vector_store = CustomSupabaseVectorStore(client=self.client, embedding=self.embeddings, table_name="documents")
         return vector_store
 
-    def save_documents(self, documents):
-        vector_store = SupabaseVectorStore.from_documents(documents, self.embeddings, client=self.client)
+    def save_documents(self, documents, chatbot_id):
+        # Add chatbot_id to metadata
+        for document in documents:
+            document.metadata["chatbot_id"] = chatbot_id
+
+        vector_store = CustomSupabaseVectorStore.from_documents(documents, self.embeddings, client=self.client)
         return vector_store
 
     def search_documents(self, query):

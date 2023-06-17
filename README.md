@@ -16,7 +16,14 @@ Frontend: https://ecomchatbot.vercel.app/
 pipenv install
 ```
 
-1. Test the script:
+3. Run the script:
+
+Feeding data based on urls:
 ```
-pipenv run python src/main.py
+pipenv run python src/main.py load-data "https://uscarseat.com/pages/shipping-policy" "https://uscarseat.com/pages/return-refund" "https://uscarseat.com/pages/terms-of-services"
+```
+
+Answer the question:
+```
+pipenv run python src/main.py answer-question "I want to return my product"
 ```

@@ -12,7 +12,7 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     } else {
       alert('Check your email for the login link!')
     }
@@ -22,8 +22,8 @@ export default function Auth() {
   return (
     <div className="row flex flex-center">
       <div className="col-6 form-widget">
-        <h1 className="header">Supabase + React</h1>
-        <p className="description">Sign in via magic link with your email below</p>
+        <h1 className="header">Ecomchatbot</h1>
+        <p className="description">Get in with magic link directly to your email</p>
         <form className="form-widget" onSubmit={handleLogin}>
           <div>
             <input

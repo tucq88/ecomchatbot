@@ -20,10 +20,10 @@ pipenv install
 
 Feeding data based on urls:
 ```
-pipenv run python src/main.py load-data "https://uscarseat.com/pages/shipping-policy" "https://uscarseat.com/pages/return-refund" "https://uscarseat.com/pages/terms-of-services"
+pipenv run python src/main.py load-data "https://uscarseat.com/pages/shipping-policy" "https://uscarseat.com/pages/return-refund" "https://uscarseat.com/pages/terms-of-services" --chatbot-id="yourchatbotid"
 ```
 
 Answer the question:
 ```
-pipenv run python src/main.py answer-question "I want to return my product"
+pipenv run python src/main.py answer-question "I want to return my product" --chatbot-id="yourchatbotid"
 ```

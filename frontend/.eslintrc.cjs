@@ -12,5 +12,7 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
     'no-undef': 'off',
+    'react/jsx-no-target-blank': 'off',
+    'prop-types': '^15.8.1',
   },
 }

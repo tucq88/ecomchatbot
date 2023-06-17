@@ -1,9 +1,21 @@
-import { useState } from 'react'
-import { supabase } from './libs/supabaseClient'
+import { useEffect, useState } from 'react'
+import { supabase } from '../libs/supabaseClient'
+import { Session } from '@supabase/supabase-js'
 
-export default function Auth() {
+export default function Login() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [session, setSession] = useState<Session | null>()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()

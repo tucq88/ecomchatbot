@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './libs/supabaseClient'
+import { supabase } from '../libs/supabaseClient'
+import { useAuth } from '../contexts/Auth'
 
-export default function Account({ session }) {
+export default function Account() {
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState(null)
   const [website, setWebsite] = useState(null)
   const [avatar_url, setAvatarUrl] = useState(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     async function getProfile() {
       setLoading(true)
-      const { user } = session
 
       const { data, error } = await supabase
         .from('profiles')
@@ -30,13 +31,12 @@ export default function Account({ session }) {
     }
 
     getProfile()
-  }, [session])
+  }, [user])
 
   async function updateProfile(event) {
     event.preventDefault()
 
     setLoading(true)
-    const { user } = session
 
     const updates = {
       id: user.id,
@@ -58,7 +58,7 @@ export default function Account({ session }) {
     <form onSubmit={updateProfile} className="form-widget">
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={session.user.email} disabled />
+        <input id="email" type="text" value={user.email} disabled />
       </div>
       <div>
         <label htmlFor="username">Name</label>
@@ -83,12 +83,6 @@ export default function Account({ session }) {
       <div>
         <button className="button block primary" type="submit" disabled={loading}>
           {loading ? 'Loading ...' : 'Update'}
-        </button>
-      </div>
-
-      <div>
-        <button className="button block" type="button" onClick={() => supabase.auth.signOut()}>
-          Sign Out
         </button>
       </div>
     </form>

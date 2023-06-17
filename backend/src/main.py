@@ -1,47 +1,32 @@
-import os
-from supabase.client import Client, create_client
+import click
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import SupabaseVectorStore
-from langchain.document_loaders import TextLoader
-from langchain.llms import OpenAI
-from langchain.chains import ConversationalRetrievalChain
+from repository.document_repository import DocumentRepository
+from loader.loader import DataLoader
+from services.chatbot import Chatbot
 
+@click.group()
+def cli():
+    pass
 
-supabase_url = os.environ.get("SUPABASE_URL")
-supabase_key = os.environ.get("SUPABASE_SERVICE_KEY")
-supabase: Client = create_client(supabase_url, supabase_key)
+@cli.command()
+@click.argument('urls', nargs=-1)
+def load_data(urls):
+    document_repository = DocumentRepository(embeddings=OpenAIEmbeddings())
+    loader = DataLoader()
+    documents = loader.load_urls(urls)
+    vector_store = document_repository.save_documents(documents)
+    click.echo("Data loaded successfully!")
 
+@cli.command()
+@click.argument('question')
+@click.option('--chat-history', multiple=True)
+def answer_question(question, chat_history):
+    document_repository = DocumentRepository(embeddings=OpenAIEmbeddings())
+    vector_store = document_repository.get_vector_store()
+    chatbot = Chatbot(vector_store)
+    standalone_question, answer = chatbot.generate_question(question, list(chat_history))
+    click.echo(f"Question: {standalone_question}")
+    click.echo(f"Answer: {answer}")
 
-# -------- 1. load data, split into chunks and embed to database
-loader = TextLoader("policy.txt")
-documents = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=400, chunk_overlap=50)
-docs = text_splitter.split_documents(documents)
-
-embeddings = OpenAIEmbeddings()
-
-# save data to db
-# vector_store = SupabaseVectorStore.from_documents(docs, embeddings, client=supabase)
-vector_store = SupabaseVectorStore(client=supabase, embedding=embeddings, table_name="documents")
-
-# -------- 2. Similarity search based on query
-# query = "How long does it takes to deliver?"
-# matched_docs = vector_store.similarity_search(query)
-
-# # print(matched_docs[0].page_content)
-
-# # query
-# query = "I want to return my product"
-# matched_docs = vector_store.similarity_search(query)
-
-# print(matched_docs[0].page_content)
-
-# -------- 3. Chatbot
-qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0), vector_store.as_retriever())
-result = qa({"question": "How long does it take to deliver", "chat_history": []})
-
-print('Question: ', result['question'])
-print('Answer: ', result['answer'])
-
-
+if __name__ == "__main__":
+    cli()

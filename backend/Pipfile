@@ -8,6 +8,11 @@ openai = "*"
 langchain = "*"
 supabase = "*"
 tiktoken = "*"
+html2text = "*"
+requests = "*"
+unstructured = "*"
+playwright = "*"
+click = "*"
 
 [dev-packages]
 

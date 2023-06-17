@@ -14,9 +14,15 @@ unstructured = "*"
 playwright = "*"
 click = "*"
 fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.11"
 python_full_version = "3.11.3"
+
+[scripts]
+cli = "python src/cli.py"
+api = "uvicorn src.api:app --reload"
